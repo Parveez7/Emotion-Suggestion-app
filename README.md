@@ -4,6 +4,12 @@
 
 This project is an interactive web application that uses computer vision and machine learning to detect emotions from facial expressions in real-time. Based on the detected emotion, the app provides personalized suggestions to help users manage their emotional state.
 
+## App Layout
+
+![Emotion Detection App Layout](app_layout.png)
+
+*Figure 1: Layout of the Emotion Detection and Suggestion App*
+
 ## Features
 
 - Real-time emotion detection from webcam feed
