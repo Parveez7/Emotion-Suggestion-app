@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection and Suggestion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6a1b9a;
+            --secondary-color: #9c27b0;
+            --background-color: #f3e5f5;
+            --text-color: #3e2723;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem;
+            color: white;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+
+        .video-container, .info-container {
+            background-color: var(--card-background);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .video-container {
+            flex: 1;
+        }
+
+        .info-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        #videoElement {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 0;
+        }
+
+        #emotion, #suggestion {
+            background-color: var(--background-color);
+            padding: 1rem;
+            border-radius: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        Emotion Detection and Suggestion
+    </nav>
+    <div class="container">
+        <div class="video-container">
+            <h2>Live Feed</h2>
+            <img id="videoElement" src="{{ url_for('video_feed') }}" alt="Video feed">
+        </div>
+        <div class="info-container">
+            <h2>Analysis</h2>
+            <div id="emotion">Detecting emotion...</div>
+            <div id="suggestion">Generating suggestion...</div>
+        </div>
+    </div>
+
+    <script>
+        function updateSuggestion() {
+            fetch('/get_emotion')
+                .then(response => response.json())
+                .then(data => {
+                    const emotion = data.emotion;
+                    document.getElementById('emotion').innerText = `Detected emotion: ${emotion}`;
+                    
+                    return fetch(`/get_suggestion/${emotion}`);
+                })
+                .then(response => response.text())
+                .then(suggestion => {
+                    document.getElementById('suggestion').innerText = `Suggestion: ${suggestion}`;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Update suggestion every 10 seconds
+        setInterval(updateSuggestion, 10000);
+        
+        // Initial update
+        updateSuggestion();
+    </script>
+</body>
+</html>
